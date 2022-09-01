@@ -1,5 +1,8 @@
-.App {
+html {
   background-color: #282c34;
+}
+
+.App {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -7,4 +10,9 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  padding: 2rem 5vw;
+  padding-top: 6rem;
+  max-width: 1440px;
+  margin-right: auto;
+  margin-left: auto;
 }
