@@ -67,6 +67,7 @@ export const NotesSectionContainer = styled.div`
     justify-content: start;
     align-items: start;
     border-left: 1px solid white;
+    width: 30%;
     flex-basic: 30%;
   }
 `;
