@@ -15,9 +15,9 @@ import DefinitionList from "./components/definition-list";
 const baseUrl = "https://api.dictionaryapi.dev/api/v2/entries/en/";
 
 function App() {
-  const [wordMap, setWordMap] = useState<WordMap>({});
-  const [currentWordObject, setCurrentWordObject] = useState<WordObject>();
-  const [error, setError] = useState<WordError>();
+  const [wordMap, setWordMap] = useState<WordMap>({}); // manage current app data storage
+  const [currentWordObject, setCurrentWordObject] = useState<WordObject>(); // manage current app display state
+  const [error, setError] = useState<WordError>(); // for error handling
 
   const fetchData = async (searchQuery: string) => {
     // check if user has searched this word before
@@ -25,18 +25,21 @@ function App() {
       setError(undefined);
       setCurrentWordObject(wordMap[searchQuery]);
     } else {
+      // if word does not exist in the data
       fetch(`${baseUrl}${searchQuery.toLowerCase()}`)
         .then((response) => response.json())
         .then((data) => {
           const transformedWordObject:
             | WordObject
             | DictionaryErrorResponse = transformWordResponse(data);
+          //  if response has error response
           if ("title" in transformedWordObject) {
             setError({
               word: searchQuery,
               ...transformedWordObject,
             });
           } else {
+            // if response comes with valid definitions and data
             setError(undefined);
             setWordMap({
               ...wordMap,
@@ -48,6 +51,7 @@ function App() {
     }
   };
 
+  // add notes to word object and update data
   const addNotes = (newNote: string) => {
     if (!currentWordObject) return;
     let newNotesObject = { ...currentWordObject.notes };
@@ -59,6 +63,8 @@ function App() {
         [newKeyNote]: newNote,
       },
     };
+
+    // update state and word map
     const updatedWordObject: WordObject = {
       ...currentWordObject,
       notes: newNotesObject,
@@ -70,8 +76,10 @@ function App() {
     });
   };
 
+  // remove note from current word object and update word map
   const removeNote = (noteKey: number) => {
     if (!currentWordObject) return;
+    // check noteKey exist in the current data structure
     if (currentWordObject.notes.data[noteKey]) {
       let newNotesObject = { ...currentWordObject.notes };
       delete newNotesObject.data[noteKey];
@@ -79,9 +87,18 @@ function App() {
         ...newNotesObject,
         numberOfNotes: newNotesObject.numberOfNotes - 1,
       };
+
+      // update state and word map
       setCurrentWordObject({
         ...currentWordObject,
         notes: newNotesObject,
+      });
+      setWordMap({
+        ...wordMap,
+        [currentWordObject.word]: {
+          ...currentWordObject,
+          notes: newNotesObject,
+        },
       });
     }
   };
@@ -92,9 +109,7 @@ function App() {
       <Styled.MainContent>
         <Styled.MainContentWrapper>
           {error ? (
-            <>
-              <p>{error.title}</p>
-            </>
+            <p>{error.title}</p>
           ) : (
             currentWordObject && (
               <>

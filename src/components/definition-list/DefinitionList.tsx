@@ -8,9 +8,10 @@ interface DefinitionListProps {
 
 const DefinitionList: React.FunctionComponent<DefinitionListProps> = ({
   definitions,
+  ...props
 }: DefinitionListProps) => {
   return (
-    <Styled.DefinitionListContainer>
+    <Styled.DefinitionListContainer {...props}>
       <Styled.DefintionHeader>Definitions</Styled.DefintionHeader>
       <Styled.UnorderList>
         {definitions.map((definition: string) => (
